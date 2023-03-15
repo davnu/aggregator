@@ -1,0 +1,4 @@
+backend-services-client:
+  hostname: localhost
+  port: 4000
+  base-url: http://${backend-services-client.hostname}:${backend-services-client.port}
