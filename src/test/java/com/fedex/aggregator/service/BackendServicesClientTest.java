@@ -1,10 +1,6 @@
-package com.fedex.aggregator.backendServices;
+package com.fedex.aggregator.service;
 
 
-import com.fedex.aggregator.controller.error.ApiException;
-import com.fedex.aggregator.service.ShipmentProductType;
-import com.fedex.aggregator.service.ShipmentProducts;
-import com.fedex.aggregator.service.TrackStatusType;
 import com.fedex.aggregator.service.client.BackendServicesClient;
 import com.fedex.aggregator.service.client.BackendServicesClientConfiguration;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -34,11 +29,11 @@ public class BackendServicesClientTest {
     @Mock
     private RestTemplate restTemplate;
 
-    private BackendServicesClient service;
+    private BackendServicesClient backendServicesClient;
 
     @BeforeEach
     public void setup() {
-        service = new BackendServicesClient(new BackendServicesClientConfiguration("http://localhost"), restTemplate);
+        backendServicesClient = new BackendServicesClient(new BackendServicesClientConfiguration("http://localhost"), restTemplate);
     }
 
     @Test
@@ -46,14 +41,14 @@ public class BackendServicesClientTest {
         Mockito.when(restTemplate.getForObject(any(URI.class), eq(ShipmentProductType[].class))).thenReturn(new ShipmentProductType[]{ShipmentProductType.ENVELOPE});
 
         var expectedShipmentProducts = List.of(ShipmentProductType.ENVELOPE);
-        assertThat(service.getShipmentProducts(getRandomOrderNumber()).get().get()).isEqualTo(expectedShipmentProducts);
+        assertThat(backendServicesClient.getShipmentProducts(getRandomOrderNumber()).get().get()).isEqualTo(expectedShipmentProducts);
     }
 
     @Test
     public void getShipmentProducts_clientError() throws ExecutionException, InterruptedException {
         Mockito.when(restTemplate.getForObject(any(URI.class), eq(ShipmentProductType[].class))).thenThrow(new RestClientException("error"));
 
-        assertThat(service.getShipmentProducts(getRandomOrderNumber()).get()).isNotPresent();
+        assertThat(backendServicesClient.getShipmentProducts(getRandomOrderNumber()).get()).isNotPresent();
     }
 
     @Test
@@ -61,14 +56,14 @@ public class BackendServicesClientTest {
         Mockito.when(restTemplate.getForObject(any(URI.class), eq(TrackStatusType.class))).thenReturn(TrackStatusType.COLLECTED);
 
         var expectedTrackStatusType = TrackStatusType.COLLECTED;
-        assertThat(service.getTrackStatus(getRandomOrderNumber()).get().get()).isEqualTo(expectedTrackStatusType);
+        assertThat(backendServicesClient.getTrackStatus(getRandomOrderNumber()).get().get()).isEqualTo(expectedTrackStatusType);
     }
 
     @Test
     public void getTrackStatus_ClientError() throws ExecutionException, InterruptedException {
         Mockito.when(restTemplate.getForObject(any(URI.class), eq(TrackStatusType.class))).thenThrow(new RestClientException("error"));
 
-        assertThat(service.getTrackStatus(getRandomOrderNumber()).get()).isNotPresent();
+        assertThat(backendServicesClient.getTrackStatus(getRandomOrderNumber()).get()).isNotPresent();
     }
 
 
@@ -77,13 +72,13 @@ public class BackendServicesClientTest {
         Mockito.when(restTemplate.getForObject(any(URI.class), eq(BigDecimal.class))).thenReturn(new BigDecimal("10"));
 
         var expectedPricing = new BigDecimal("10");
-        assertThat(service.getPricing(Locale.CANADA.getCountry()).get().get()).isEqualTo(expectedPricing);
+        assertThat(backendServicesClient.getPricing(Locale.CANADA.getCountry()).get().get()).isEqualTo(expectedPricing);
     }
 
     @Test
     public void getPricing_ClientError() throws ExecutionException, InterruptedException {
         Mockito.when(restTemplate.getForObject(any(URI.class), eq(BigDecimal.class))).thenThrow(new RestClientException("error"));
 
-        assertThat(service.getPricing(Locale.CANADA.getCountry()).get()).isNotPresent();
+        assertThat(backendServicesClient.getPricing(Locale.CANADA.getCountry()).get()).isNotPresent();
     }
 }

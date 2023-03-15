@@ -1,4 +1,4 @@
-package com.fedex.aggregator.backendServices;
+package com.fedex.aggregator.service;
 
 import com.fedex.aggregator.AggregatorConfiguration;
 import com.fedex.aggregator.controller.error.ApiException;
