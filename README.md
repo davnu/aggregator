@@ -4,6 +4,8 @@
 This is a Spring Boot 3 application. To run it, navigate to the main directory and run the command:
 `./gradlew bootRun`
 
+By default the external service connection (host and port) is configured as exposed in the specification. You can override both properties through application.yml or VM options
+
 ### Aggregator api examples
 Here are some examples of how to use the API:
 
